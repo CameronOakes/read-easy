@@ -61,7 +61,7 @@ function boldFirstTwoLetters(node, adjustedFontWeight) {
     const textContent = node.nodeValue.trim();
     console.log(textContent);
     if (textContent.length <= 100) {
-      return; // Do not manipulate the font if the text is 50 characters or less
+      return; // Change this value to adjust the minimum length of the text to be bold
     }
 
     const words = textContent.split(/\s+/);
