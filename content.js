@@ -18,8 +18,8 @@ const fetchFontWeight = () => {
   return new Promise((resolve) => {
     chrome.storage.sync.get(["fontWeight"], (result) => {
       if (result.fontWeight !== undefined) {
+        console.log(`Font weight:${result.fontWeight}`);
         resolve(result.fontWeight);
-        console.log(result.fontWeight);
       } else {
         chrome.storage.sync.set({ fontWeight: 700 });
         console.log('Font weight not found, setting default 700');
@@ -38,6 +38,31 @@ fetchFontWeight().then((weight) => {
 });
 
 
+// Fetch the text body size from the storage
+const fetchTextBodySize = () => {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(["textBodySize"], (result) => {
+      if (result.textBodySize !== undefined) {
+        console.log(`Text body size: ${result.textBodySize}`);
+        resolve(result.textBodySize);
+      } else {
+        chrome.storage.sync.set({ textBodySize: 50 });
+        console.log('Text body size not found, setting default 50');
+        resolve(50);
+      }
+    });
+  });
+};
+
+// Set the slider value based on the stored text body size
+fetchTextBodySize().then((size) => {
+  const slider = document.getElementById('textBodySizeSlider');
+  if (slider) {
+    slider.value = size;
+  }
+});
+
+// Listen for changes in the checkbox state
 document.addEventListener('DOMContentLoaded', () => {
   const checkbox = document.getElementById('fontWeightCheckbox');
   if (checkbox) {
@@ -56,11 +81,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-function boldFirstTwoLetters(node, adjustedFontWeight) {
+// Listen for changes in the slider value
+document.addEventListener('DOMContentLoaded', () => {
+  const slider = document.getElementById('textBodySizeSlider');
+  let sliderTimeout;
+
+  if (slider) {
+    slider.addEventListener('input', (event) => {
+      clearTimeout(sliderTimeout); // Clear any existing timeout
+      sliderTimeout = setTimeout(() => {
+        let size = slider.min - event.target.value + parseInt(slider.max);
+        chrome.storage.sync.set({ textBodySize: size }, () => {
+          chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            if (tabs.length > 0) {
+                chrome.tabs.reload(tabs[0].id);
+            }
+          }); // Refresh the page to apply the new text body size
+        });
+      }, 300); // Wait 300ms after the user stops dragging
+    });
+  } else {
+    console.error('Slider element not found');
+  }
+});
+
+// Function to execute the bolding process
+async function boldFirstTwoLetters(node, adjustedFontWeight) {
   if (node.nodeType === Node.TEXT_NODE) {
     const textContent = node.nodeValue.trim();
-    console.log(textContent);
-    if (textContent.length <= 100) {
+    const size = await fetchTextBodySize().catch((error) => {
+      console.error('Error fetching text body size:', error);
+      return 50; // Default size in case of an error
+    });
+    if (textContent.length <= size) {
       return; // Change this value to adjust the minimum length of the text to be bold
     }
 
@@ -87,6 +140,7 @@ function boldFirstTwoLetters(node, adjustedFontWeight) {
   }
 }
 
+// Function to walk the DOM and bold each text node
 function walkDOM(node) {
   fetchFontWeight().then((weight) => {
     fontWeight = weight;
