@@ -6,7 +6,7 @@ const exceptionWords = [
   "should", "since", "some", "still", "there", "these", "those",
   "until", "while", "where", "which", "would", "within", "without",
   "and", "the", "for", "are", "but", "not", "you", "all", "any", "can", "her",
-  "was", "one", "our", "out", "day", "get", "has", "him", "his", "how", "add"
+  "was", "one", "our", "out", "day", "get", "has", "him", "his", "how", "add", "Changing settings will refresh the page"
 ];
 
 let fontWeight = 700;
@@ -18,7 +18,6 @@ const fetchFontWeight = () => {
   return new Promise((resolve) => {
     chrome.storage.sync.get(["fontWeight"], (result) => {
       if (result.fontWeight !== undefined) {
-        console.log(`Font weight:${result.fontWeight}`);
         resolve(result.fontWeight);
       } else {
         chrome.storage.sync.set({ fontWeight: 700 });
@@ -30,11 +29,13 @@ const fetchFontWeight = () => {
 };
 
 // Set the checkbox state based on the stored font weight
-fetchFontWeight().then((weight) => {
-  const checkbox = document.getElementById('fontWeightCheckbox');
-  if (checkbox) {
-    checkbox.checked = (weight === 700);
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  fetchFontWeight().then((weight) => {
+    const checkbox = document.getElementById('fontWeightCheckbox');
+    if (checkbox) {
+      checkbox.checked = (weight === 700);
+    }
+  });
 });
 
 
@@ -43,7 +44,6 @@ const fetchTextBodySize = () => {
   return new Promise((resolve) => {
     chrome.storage.sync.get(["textBodySize"], (result) => {
       if (result.textBodySize !== undefined) {
-        console.log(`Text body size: ${result.textBodySize}`);
         resolve(result.textBodySize);
       } else {
         chrome.storage.sync.set({ textBodySize: 50 });
@@ -55,11 +55,14 @@ const fetchTextBodySize = () => {
 };
 
 // Set the slider value based on the stored text body size
-fetchTextBodySize().then((size) => {
-  const slider = document.getElementById('textBodySizeSlider');
-  if (slider) {
-    slider.value = size;
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  fetchTextBodySize().then((size) => {
+    const slider = document.getElementById('textBodySizeSlider');
+    if (slider) {
+      slider.value = slider.max - size + parseInt(slider.min);
+      console.log(`Slider value set to: ${slider.value}`);
+    }
+  });
 });
 
 // Listen for changes in the checkbox state
