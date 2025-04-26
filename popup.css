@@ -1,10 +1,17 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: rgb(29, 29, 29); /* Match your container */
+  background-color: rgb(255, 255, 255); /* Match your container */
   margin: 0; /* Remove default margin */
   padding: 0;
   border-radius: 15px; /* Won't affect the outer window but keeps things consistent */
   overflow: hidden; /* Prevents content from spilling outside */
+}
+
+.logo {
+  width: 50px;
+  height: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 label {
@@ -21,12 +28,14 @@ label {
 }
 
 .toggle {
-  color: white;
+  color: rgb(0, 0, 0);
   align-items: center;
+  font-size: 16px;
+  margin-right: 10px;
 }
 
 p {
-  color: white;
+  color: rgb(0, 0, 0);
   font-size: 14px;
   margin-top: 10px;
   font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -35,7 +44,7 @@ p {
 }
 
 h3 {
-  color: white;
+  color: rgb(0, 0, 0);
   font-size: 22px;
   margin-bottom: 5px;
   margin-top: 5px;
@@ -49,7 +58,6 @@ h3 {
   overflow: hidden; /* Prevents content from spilling outside */
   width: 200px;
   height: auto;
-  background-color: rgb(46, 46, 46);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -162,12 +170,6 @@ input[type=range] {
 
 .slidecontainer {
   padding: 10px;
-}
-
-.toggle {
-  font-size: 16px;
-  margin-right: 10px;
-  color: #ffffff;
 }
 
 /* Base Slider */
