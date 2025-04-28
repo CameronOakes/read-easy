@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Read Easy",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Make words bolder to assist with reading.",
   "permissions": ["activeTab", "storage"],
   "content_scripts": [
